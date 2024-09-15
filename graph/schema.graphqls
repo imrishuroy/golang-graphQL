@@ -28,7 +28,7 @@ input RefreshTokenInput {
 }
 
 input NewUser {
-    name: String!
+    username: String!
     password: String!
 }
 

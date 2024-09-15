@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/imrishuroy/hackernews/graph"
+	"github.com/imrishuroy/hackernews/internal/auth"
 	database "github.com/imrishuroy/hackernews/internal/pkg/db/migrations/mysql"
 	"log"
 	"net/http"
@@ -22,15 +23,10 @@ func main() {
 
 	router := chi.NewRouter()
 
+	router.Use(auth.Middleware())
+
 	database.InitDB()
-	defer func() {
-		err := database.CloseDB()
-		if err != nil {
-
-		}
-	}()
 	database.Migrate()
-
 	server := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{}}))
 	router.Handle("/", playground.Handler("GraphQL playground", "/query"))
 	router.Handle("/query", server)
